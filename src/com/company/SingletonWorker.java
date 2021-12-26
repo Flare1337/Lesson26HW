@@ -1,30 +1,27 @@
 package com.company;
 import java.util.concurrent.CountDownLatch;
 
-public class SingletonWorker implements Runnable {
+public class SingletonWorker {
     public CountDownLatch countDownLatch;
     private static SingletonWorker singletonWorker;
+    public static int counterOfCreatedSingletons = 0;
 
     private SingletonWorker(CountDownLatch countDownLatch) {
+        ++counterOfCreatedSingletons;
         this.countDownLatch = countDownLatch;
     }
 
-    public static synchronized SingletonWorker getSingletonWorker(CountDownLatch countDownLatch) {
+    public static SingletonWorker getSingletonWorker(CountDownLatch countDownLatch) {
         if (singletonWorker == null) {
             singletonWorker = new SingletonWorker(countDownLatch);
         }
         return singletonWorker;
     }
 
-    public static SingletonWorker getSingletonWorkerSync(CountDownLatch countDownLatch) {
+    public static synchronized SingletonWorker getSingletonWorkerSync(CountDownLatch countDownLatch) {
         if (singletonWorker == null) {
             singletonWorker = new SingletonWorker(countDownLatch);
         }
         return singletonWorker;
-    }
-
-    @Override
-    public void run() {
-        countDownLatch.countDown();
     }
 }

@@ -9,8 +9,10 @@ public class Main {
         new Main().showPointWithoutSyncTaskResult();
         new Main().showAtomicPointTaskResult();
         new Main().finishAllTheTasks();
-        new Main().getCollectionOfSingletonObjects();
-  //      new Main().getOneSingletonObject();
+        // Получить более 1 синглтона
+        // new Main().getCollectionOfSingletonObjects();
+        // Один
+        new Main().getOneSingletonObject();
     }
 
     public void getCollectionOfSingletonObjects() {
@@ -19,26 +21,19 @@ public class Main {
         Collection<Future<SingletonWorker>> singletonWorkers = new ArrayList<>();
         Future<SingletonWorker> singletonWorkerFuture;
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10000; i++) {
             singletonWorkerFuture = executor.submit(new SingletonWorkerTask(countDownLatch));
             singletonWorkers.add(singletonWorkerFuture);
         }
 
         countDownLatch.countDown();
 
-        for (Future<SingletonWorker> singletonWorker : singletonWorkers) {
-            try {
-                System.out.println(singletonWorker.get().toString());
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-
         try {
-            countDownLatch.await();
+            TimeUnit.SECONDS.sleep(2);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        System.out.println("The number of created singletons: " + SingletonWorker.counterOfCreatedSingletons);
     }
 
     public void getOneSingletonObject() {
@@ -48,25 +43,19 @@ public class Main {
         Collection<Future<SingletonWorker>> singletonWorkers = new ArrayList<>();
         Future<SingletonWorker> singletonWorkerFuture;
 
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < 10000; i++) {
             singletonWorkerFuture = executor.submit(new SingletonWorkerSyncTask(countDownLatch));
             singletonWorkers.add(singletonWorkerFuture);
         }
+
         countDownLatch.countDown();
 
-        for (Future<SingletonWorker> singletonWorker : singletonWorkers) {
-            try {
-                System.out.println(singletonWorker.get().toString());
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-
         try {
-            countDownLatch.await();
+            TimeUnit.SECONDS.sleep(2);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        System.out.println("The number of created singletons: " + SingletonWorker.counterOfCreatedSingletons);
     }
 
     public void finishAllTheTasks() {
